@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pendaftaran Ekskul KIR</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #F5E6D3;
+      --card:      #FFF8F2;
+      --primary:   #C4956A;
+      --dark:      #8B5E3C;
+      --deeper:    #6B3F1E;
+      --text:      #3D2010;
+      --muted:     #A07855;
+      --border:    #E0C5A8;
+      --success:   #6A8C5E;
+      --error:     #B85C38;
+      --shadow:    rgba(139, 94, 60, 0.15);
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem 4rem;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Decorative background atoms */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      opacity: 0.06;
+      pointer-events: none;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      border: 3px solid var(--dark);
+      top: -100px; right: -100px;
+    }
+    body::after {
+      width: 350px; height: 350px;
+      border: 3px solid var(--dark);
+      bottom: -80px; left: -80px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+      max-width: 560px;
+    }
+    .logo-ring {
+      width: 72px; height: 72px;
+      border: 3px solid var(--primary);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1rem;
+      position: relative;
+    }
+    .logo-ring::before {
+      content: '';
+      position: absolute;
+      width: 88px; height: 88px;
+      border: 1px solid var(--border);
+      border-radius: 50%;
+    }
+    .logo-ring svg { color: var(--primary); }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: var(--deeper);
+      line-height: 1.2;
+    }
+    header p {
+      margin-top: 0.5rem;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    /* Card */
+    .card {
+      background: var(--card);
+      border-radius: 20px;
+      padding: 2.5rem 2.5rem;
+      width: 100%;
+      max-width: 560px;
+      box-shadow: 0 8px 40px var(--shadow), 0 2px 8px rgba(0,0,0,0.04);
+      border: 1px solid var(--border);
+      position: relative;
+    }
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), var(--dark));
+      border-radius: 20px 20px 0 0;
+    }
+
+    /* Form fields */
+    .form-group {
+      margin-bottom: 1.4rem;
+    }
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--dark);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.45rem;
+    }
+    label .req { color: var(--primary); margin-left: 2px; }
+
+    input, select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text);
+      background: #fff;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      appearance: none;
+    }
+    input::placeholder { color: #C5A882; }
+    input:focus, select:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(196, 149, 106, 0.18);
+    }
+    input.error, select.error {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.12);
+    }
+    .field-error {
+      font-size: 0.78rem;
+      color: var(--error);
+      margin-top: 0.3rem;
+      display: none;
+    }
+    .field-error.show { display: block; }
+
+    /* Select arrow */
+    .select-wrapper {
+      position: relative;
+    }
+    .select-wrapper::after {
+      content: '';
+      position: absolute;
+      right: 14px; top: 50%;
+      transform: translateY(-50%);
+      width: 0; height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 6px solid var(--muted);
+      pointer-events: none;
+    }
+
+    /* Divisi cards */
+    .divisi-label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--dark);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 0.7rem;
+    }
+    .divisi-label .req { color: var(--primary); margin-left: 2px; }
+
+    .divisi-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.75rem;
+    }
+    .divisi-option input[type="radio"] { display: none; }
+    .divisi-option label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.9rem 0.5rem;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: none;
+      letter-spacing: 0;
+      font-weight: 500;
+      font-size: 0.88rem;
+      color: var(--muted);
+      background: #fff;
+      text-align: center;
+    }
+    .divisi-option label .icon {
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .divisi-option input:checked + label {
+      border-color: var(--primary);
+      background: rgba(196, 149, 106, 0.1);
+      color: var(--deeper);
+      box-shadow: 0 2px 12px var(--shadow);
+    }
+    .divisi-option label:hover {
+      border-color: var(--primary);
+      color: var(--dark);
+    }
+    .divisi-grid.error-group .divisi-option label {
+      border-color: var(--error);
+    }
+    .divisi-grid.error-group .divisi-option input:checked + label {
+      border-color: var(--primary);
+    }
+
+    /* Divider */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.8rem 0;
+    }
+
+    /* Submit button */
+    .btn-submit {
+      width: 100%;
+      padding: 0.9rem;
+      background: linear-gradient(135deg, var(--primary), var(--dark));
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      letter-spacing: 0.02em;
+      box-shadow: 0 4px 16px rgba(139, 94, 60, 0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+    .btn-submit:hover:not(:disabled) {
+      opacity: 0.92;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 22px rgba(139, 94, 60, 0.38);
+    }
+    .btn-submit:active:not(:disabled) { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    /* Spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    .btn-submit.loading .spinner { display: block; }
+    .btn-submit.loading .btn-text { opacity: 0.7; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      top: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(-20px);
+      padding: 0.85rem 1.6rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: #fff;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+      opacity: 0;
+      transition: opacity 0.3s, transform 0.3s;
+      z-index: 1000;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+    .toast.success { background: var(--success); }
+    .toast.error   { background: var(--error); }
+
+    /* Success state */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 2rem 0;
+    }
+    .success-screen.show { display: block; }
+    .success-icon {
+      width: 80px; height: 80px;
+      background: rgba(106, 140, 94, 0.12);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 1.2rem;
+      font-size: 2.2rem;
+    }
+    .success-screen h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--deeper);
+      font-size: 1.6rem;
+      margin-bottom: 0.5rem;
+    }
+    .success-screen p { color: var(--muted); line-height: 1.6; }
+    .btn-reset {
+      margin-top: 1.5rem;
+      padding: 0.7rem 2rem;
+      background: transparent;
+      border: 1.5px solid var(--primary);
+      border-radius: 10px;
+      color: var(--dark);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-reset:hover { background: rgba(196,149,106,0.1); }
+
+    /* Footer */
+    footer {
+      margin-top: 2rem;
+      color: var(--muted);
+      font-size: 0.8rem;
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 1.8rem 1.4rem; }
+      .divisi-grid { grid-template-columns: repeat(3, 1fr); gap: 0.5rem; }
+      .divisi-option label { padding: 0.75rem 0.3rem; font-size: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo-ring">
+      <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M12 2a10 10 0 0 1 0 20A10 10 0 0 1 12 2"/>
+        <path d="M2 12h4M18 12h4M12 2v4M12 18v4"/>
+        <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(45 12 12)" fill="none"/>
+      </svg>
+    </div>
+    <h1>Kelompok Ilmiah Remaja</h1>
+    <p>Daftarkan dirimu dan bergabunglah bersama komunitas peneliti muda yang penuh semangat inovasi.</p>
+  </header>
+
+  <div class="card">
+    <!-- Form -->
+    <form id="kirForm" novalidate>
+      <div class="form-group">
+        <label for="nama">Nama Lengkap <span class="req">*</span></label>
+        <input type="text" id="nama" placeholder="Masukkan nama lengkapmu" autocomplete="name" />
+        <span class="field-error" id="err-nama">Nama tidak boleh kosong.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="kelas">Kelas <span class="req">*</span></label>
+        <div class="select-wrapper">
+          <select id="kelas">
+            <option value="">— Pilih kelas —</option>
+            <option>X-1</option><option>X-2</option><option>X-3</option><option>X-4</option>
+            <option>XI-1</option><option>XI-2</option><option>XI-3</option><option>XI-4</option>
+            <option>XII-1</option><option>XII-2</option><option>XII-3</option><option>XII-4</option>
+          </select>
+        </div>
+        <span class="field-error" id="err-kelas">Kelas harus dipilih.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="nis">NIS <span class="req">*</span></label>
+        <input type="text" id="nis" placeholder="Nomor Induk Siswa" inputmode="numeric" maxlength="12" />
+        <span class="field-error" id="err-nis">NIS hanya boleh berisi angka.</span>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email <span class="req">*</span></label>
+        <input type="email" id="email" placeholder="nama@email.com" autocomplete="email" />
+        <span class="field-error" id="err-email">Masukkan alamat email yang valid.</span>
+      </div>
+
+      <hr class="divider" />
+
+      <div class="form-group">
+        <span class="divisi-label">Pilih Divisi <span class="req">*</span></span>
+        <div class="divisi-grid" id="divisiGrid">
+          <div class="divisi-option">
+            <input type="radio" name="divisi" id="div-retek" value="Retek" />
+            <label for="div-retek">
+              <span class="icon">🔧</span>
+              Retek
+            </label>
+          </div>
+          <div class="divisi-option">
+            <input type="radio" name="divisi" id="div-ai" value="AI" />
+            <label for="div-ai">
+              <span class="icon">🤖</span>
+              AI
+            </label>
+          </div>
+          <div class="divisi-option">
+            <input type="radio" name="divisi" id="div-sains" value="Sains" />
+            <label for="div-sains">
+              <span class="icon">🔬</span>
+              Sains
+            </label>
+          </div>
+        </div>
+        <span class="field-error" id="err-divisi">Silakan pilih divisi.</span>
+      </div>
+
+      <button type="submit" class="btn-submit" id="submitBtn">
+        <div class="spinner"></div>
+        <span class="btn-text">Daftar Sekarang</span>
+      </button>
+    </form>
+
+    <!-- Success screen -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">✅</div>
+      <h2>Pendaftaran Berhasil!</h2>
+      <p>Terima kasih telah mendaftar ekskul KIR.<br/>Data kamu sudah kami simpan. Pantau terus info selanjutnya.</p>
+      <button class="btn-reset" id="resetBtn">Daftar Lagi</button>
+    </div>
+  </div>
+
+  <footer>© 2025 Ekskul KIR · Semua hak dilindungi</footer>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script type="module">
+    // ─────────────────────────────────────────────
+    // CONFIG — ganti dengan URL Apps Script kamu
+    // ─────────────────────────────────────────────
+    const APPS_SCRIPT_URL: string =
+      (document.querySelector('meta[name="apps-script-url"]') as HTMLMetaElement)?.content ||
+      "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+
+    // ─── Types ────────────────────────────────────
+    interface FormData {
+      nama: string;
+      kelas: string;
+      nis: string;
+      email: string;
+      divisi: string;
+    }
+
+    interface SubmitResult {
+      success: boolean;
+      message?: string;
+    }
+
+    // ─── DOM refs ────────────────────────────────
+    const form        = document.getElementById("kirForm")       as HTMLFormElement;
+    const successScr  = document.getElementById("successScreen") as HTMLDivElement;
+    const submitBtn   = document.getElementById("submitBtn")     as HTMLButtonElement;
+    const resetBtn    = document.getElementById("resetBtn")      as HTMLButtonElement;
+    const toastEl     = document.getElementById("toast")         as HTMLDivElement;
+
+    // ─── Toast ───────────────────────────────────
+    function showToast(msg: string, type: "success" | "error" = "success"): void {
+      toastEl.textContent = msg;
+      toastEl.className = `toast ${type} show`;
+      setTimeout(() => { toastEl.classList.remove("show"); }, 3500);
+    }
+
+    // ─── Validation ──────────────────────────────
+    function setError(id: string, show: boolean, fieldId?: string): void {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle("show", show);
+      if (fieldId) {
+        const field = document.getElementById(fieldId);
+        if (field) field.classList.toggle("error", show);
+      }
+    }
+
+    function validate(data: FormData): boolean {
+      let ok = true;
+
+      const namaOk = data.nama.trim().length > 0;
+      setError("err-nama", !namaOk, "nama"); if (!namaOk) ok = false;
+
+      const kelasOk = data.kelas !== "";
+      setError("err-kelas", !kelasOk, "kelas"); if (!kelasOk) ok = false;
+
+      const nisOk = /^\d+$/.test(data.nis.trim()) && data.nis.trim().length > 0;
+      setError("err-nis", !nisOk, "nis"); if (!nisOk) ok = false;
+
+      const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email.trim());
+      setError("err-email", !emailOk, "email"); if (!emailOk) ok = false;
+
+      const divisiOk = data.divisi !== "";
+      setError("err-divisi", !divisiOk);
+      const grid = document.getElementById("divisiGrid");
+      if (grid) grid.classList.toggle("error-group", !divisiOk);
+      if (!divisiOk) ok = false;
+
+      return ok;
+    }
+
+    // ─── Submit to Google Sheets ──────────────────
+    async function submitToSheets(data: FormData): Promise<SubmitResult> {
+      const params = new URLSearchParams({
+        nama:    data.nama,
+        kelas:   data.kelas,
+        nis:     data.nis,
+        email:   data.email,
+        divisi:  data.divisi,
+        waktu:   new Date().toLocaleString("id-ID"),
+      });
+
+      const res = await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, {
+        method: "GET",
+        mode:   "no-cors",
+      });
+
+      // no-cors always returns opaque — assume success
+      return { success: true };
+    }
+
+    // ─── Form submit ─────────────────────────────
+    form.addEventListener("submit", async (e: Event) => {
+      e.preventDefault();
+
+      const data: FormData = {
+        nama:   (document.getElementById("nama")   as HTMLInputElement).value,
+        kelas:  (document.getElementById("kelas")  as HTMLSelectElement).value,
+        nis:    (document.getElementById("nis")    as HTMLInputElement).value,
+        email:  (document.getElementById("email")  as HTMLInputElement).value,
+        divisi: (document.querySelector('input[name="divisi"]:checked') as HTMLInputElement)?.value ?? "",
+      };
+
+      if (!validate(data)) {
+        showToast("Lengkapi data yang diperlukan.", "error");
+        return;
+      }
+
+      submitBtn.disabled = true;
+      submitBtn.classList.add("loading");
+
+      try {
+        await submitToSheets(data);
+        form.style.display = "none";
+        successScr.classList.add("show");
+        showToast("Pendaftaran berhasil!", "success");
+      } catch (err) {
+        showToast("Gagal mengirim data. Coba lagi.", "error");
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("loading");
+      }
+    });
+
+    // ─── Reset ───────────────────────────────────
+    resetBtn.addEventListener("click", () => {
+      form.reset();
+      form.style.display = "";
+      successScr.classList.remove("show");
+      document.querySelectorAll(".field-error").forEach(el => el.classList.remove("show"));
+      document.querySelectorAll("input, select").forEach(el => el.classList.remove("error"));
+      const grid = document.getElementById("divisiGrid");
+      if (grid) grid.classList.remove("error-group");
+    });
+  </script>
+</body>
+</html>
