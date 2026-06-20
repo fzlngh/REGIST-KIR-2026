@@ -4,521 +4,797 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pendaftaran Ekskul KIR</title>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
     :root {
-      --bg:      #F5E6D3;
-      --card:    #FFF8F2;
-      --primary: #C4956A;
-      --dark:    #8B5E3C;
-      --deeper:  #6B3F1E;
-      --text:    #3D2010;
-      --muted:   #A07855;
-      --border:  #E0C5A8;
-      --success: #6A8C5E;
-      --error:   #B85C38;
-      --shadow:  rgba(139, 94, 60, 0.15);
+      --bg-1:       #F9EDDF;
+      --bg-2:       #F0D9C0;
+      --card:       rgba(255, 252, 248, 0.82);
+      --primary:    #C4956A;
+      --primary-2:  #DFB07E;
+      --dark:       #8B5E3C;
+      --deeper:     #5C3A1E;
+      --text:       #3D2010;
+      --muted:      #9E7550;
+      --border:     #E3C9A9;
+      --success:    #5F8A52;
+      --success-2:  #8DB87E;
+      --error:      #BF5E3A;
+      --shadow:     rgba(139, 94, 60, 0.16);
+      --glass:      rgba(255, 255, 255, 0.48);
     }
+
+    html { scroll-behavior: smooth; }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem 4rem;
-      position: relative;
+      padding: 2.8rem 1rem 5rem;
       overflow-x: hidden;
+      background: linear-gradient(150deg, var(--bg-1) 0%, #EDD9BF 50%, var(--bg-2) 100%);
+      background-size: 300% 300%;
+      animation: bgDrift 18s ease-in-out infinite;
+      color: var(--text);
+      position: relative;
     }
-    body::before, body::after {
-      content: '';
+    @keyframes bgDrift {
+      0%,100% { background-position: 0% 0%; }
+      33%      { background-position: 100% 50%; }
+      66%      { background-position: 50% 100%; }
+    }
+
+    /* ── Decorative orbs ── */
+    .orb {
       position: fixed;
       border-radius: 50%;
-      opacity: 0.06;
       pointer-events: none;
+      z-index: 0;
+      will-change: transform;
     }
-    body::before {
-      width: 500px; height: 500px;
-      border: 3px solid var(--dark);
-      top: -100px; right: -100px;
+    .orb-1 {
+      width: 520px; height: 520px;
+      background: radial-gradient(circle at 35% 35%, rgba(196,149,106,0.22), transparent 65%);
+      top: -160px; right: -130px;
+      animation: orbFloat1 13s ease-in-out infinite;
     }
-    body::after {
-      width: 350px; height: 350px;
-      border: 3px solid var(--dark);
-      bottom: -80px; left: -80px;
+    .orb-2 {
+      width: 400px; height: 400px;
+      background: radial-gradient(circle at 35% 35%, rgba(139,94,60,0.18), transparent 65%);
+      bottom: -130px; left: -110px;
+      animation: orbFloat2 15s ease-in-out infinite;
     }
+    .orb-3 {
+      width: 260px; height: 260px;
+      background: radial-gradient(circle at 35% 35%, rgba(95,138,82,0.14), transparent 65%);
+      top: 38%; right: -90px;
+      animation: orbFloat1 19s ease-in-out infinite reverse;
+    }
+    @keyframes orbFloat1 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(-28px, 38px) scale(1.07); }
+    }
+    @keyframes orbFloat2 {
+      0%,100% { transform: translate(0,0) scale(1); }
+      50%      { transform: translate(24px,-24px) scale(1.05); }
+    }
+
+    /* ── Page reveal ── */
+    @keyframes riseIn {
+      from { opacity:0; transform: translateY(22px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    @keyframes fadeIn  { from { opacity:0; } to { opacity:1; } }
+    @keyframes popIn {
+      0%   { opacity:0; transform: scale(0.82); }
+      72%  { opacity:1; transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+    @keyframes shimmer {
+      0%   { background-position: 200% 0; }
+      100% { background-position: -200% 0; }
+    }
+
+    /* ── Header ── */
     header {
       text-align: center;
-      margin-bottom: 2.5rem;
-      max-width: 560px;
+      margin-bottom: 2.4rem;
+      max-width: 580px;
+      position: relative;
+      z-index: 1;
+      animation: riseIn 0.7s cubic-bezier(.22,1,.36,1) both;
     }
-    .logo-circle{
-    width:100px;
-    height:100px;
-    border-radius:50%;
-    overflow:hidden;
-    background:#fff;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    box-shadow:0 4px 14px rgba(139,94,60,.3);
-}
 
-.logo-circle img{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-}
+    /* ── Logo ── */
+    .logo-wrap {
+      position: relative;
+      width: 110px; height: 110px;
+      margin: 0 auto 1.2rem;
+      animation: popIn 0.85s cubic-bezier(.22,1,.36,1) both, logoFloat 5s ease-in-out 1s infinite;
+    }
+    @keyframes logoFloat {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-7px); }
+    }
+    .logo-ring {
+      position: absolute;
+      inset: -8px;
+      border-radius: 50%;
+      background: conic-gradient(from 0deg, var(--primary), var(--primary-2), var(--dark), var(--primary-2), var(--primary));
+      opacity: 0.5;
+      filter: blur(6px);
+      animation: spinSlow 8s linear infinite;
+    }
+    @keyframes spinSlow { to { transform: rotate(360deg); } }
+    .logo-circle {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      overflow: hidden;
+      background: #fff;
+      display: flex; justify-content: center; align-items: center;
+      position: relative;
+      z-index: 1;
+      box-shadow:
+        0 0 0 4px rgba(255,255,255,0.7),
+        0 0 0 6px var(--border),
+        0 12px 32px var(--shadow);
+    }
+    .logo-circle img { width:100%; height:100%; object-fit:cover; }
+    .logo-skeleton {
+      width:100%; height:100%; border-radius:50%;
+      background: linear-gradient(90deg,#EDD9BC 0%,#FBF0E3 50%,#EDD9BC 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.4s ease-in-out infinite;
+    }
+
     header h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2rem;
-      color: var(--deeper);
-      line-height: 1.2;
+      font-size: 2.2rem;
+      font-weight: 800;
+      background: linear-gradient(120deg, var(--deeper) 0%, var(--primary) 55%, var(--dark) 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      line-height: 1.18;
+      letter-spacing: -0.01em;
     }
     header p {
-      margin-top: 0.5rem;
+      margin-top: 0.6rem;
       color: var(--muted);
-      font-size: 0.95rem;
-      line-height: 1.6;
+      font-size: 0.96rem;
+      line-height: 1.68;
+    }
+
+    /* ── Card ── */
+    .card-wrap {
+      width: 100%; max-width: 580px;
+      position: relative;
+      z-index: 1;
+      animation: riseIn 0.8s 0.12s cubic-bezier(.22,1,.36,1) both;
     }
     .card {
       background: var(--card);
-      border-radius: 20px;
-      padding: 2.5rem;
-      width: 100%;
-      max-width: 560px;
-      box-shadow: 0 8px 40px var(--shadow), 0 2px 8px rgba(0,0,0,0.04);
-      border: 1px solid var(--border);
+      backdrop-filter: blur(22px) saturate(150%);
+      -webkit-backdrop-filter: blur(22px) saturate(150%);
+      border-radius: 26px;
+      padding: 2.8rem;
+      box-shadow:
+        0 24px 64px var(--shadow),
+        0 2px 12px rgba(0,0,0,0.04),
+        inset 0 1px 0 rgba(255,255,255,0.65);
+      border: 1px solid rgba(255,255,255,0.55);
       position: relative;
+      overflow: hidden;
     }
-    .card::before {
-      content: '';
+    .card-accent {
       position: absolute;
       top: 0; left: 0; right: 0;
       height: 4px;
-      background: linear-gradient(90deg, var(--primary), var(--dark));
-      border-radius: 20px 20px 0 0;
+      background: linear-gradient(90deg, var(--primary), var(--primary-2), var(--dark), var(--primary-2), var(--primary));
+      background-size: 400% 100%;
+      animation: accentSlide 6s linear infinite;
+      border-radius: 26px 26px 0 0;
     }
+    @keyframes accentSlide {
+      0%   { background-position: 0% 0%; }
+      100% { background-position: 400% 0%; }
+    }
+
+    /* ── Skeleton overlay ── */
+    .skeleton-overlay {
+      position: absolute;
+      inset: 0;
+      background: var(--card);
+      backdrop-filter: blur(22px);
+      border-radius: 26px;
+      padding: 2.8rem;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+      transition: opacity 0.5s ease, visibility 0.5s ease;
+    }
+    .skeleton-overlay.hide {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .sk {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      background: linear-gradient(90deg, #EDDDCA 0%, #FAF0E4 50%, #EDDDCA 100%);
+      background-size: 200% 100%;
+      animation: shimmer 1.5s ease-in-out infinite;
+    }
+    .sk-center { display: flex; justify-content: center; margin-bottom: 0.4rem; }
+    .sk-avatar { width: 88px; height: 88px; border-radius: 50%; }
+    .sk-title  { height: 28px; width: 58%; border-radius: 8px; }
+    .sk-sub    { height: 14px; width: 72%; border-radius: 6px; }
+    .sk-steps  { height: 32px; width: 44%; border-radius: 16px; }
+    .sk-label  { height: 11px; width: 36%; border-radius: 5px; }
+    .sk-input  { height: 48px; width: 100%; border-radius: 11px; }
+    .sk-row    { display: flex; gap: 0.8rem; }
+    .sk-chip   { height: 82px; flex: 1; border-radius: 13px; }
+    .sk-btn    { height: 52px; width: 100%; border-radius: 13px; margin-top: 0.2rem; }
+
+    /* ── Step indicator ── */
     .steps {
       display: flex;
       justify-content: center;
-      gap: 0.5rem;
-      margin-bottom: 1.8rem;
+      align-items: center;
+      gap: 0.55rem;
+      margin-bottom: 2.1rem;
     }
     .step-dot {
-      width: 28px; height: 28px;
+      width: 32px; height: 32px;
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.8rem;
-      font-weight: 700;
-      background: #fff;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.82rem; font-weight: 700;
+      background: rgba(255,255,255,0.9);
       border: 1.5px solid var(--border);
       color: var(--muted);
-      transition: all 0.2s;
+      transition: all 0.38s cubic-bezier(.34,1.56,.64,1);
+      position: relative;
     }
     .step-dot.active {
-      background: var(--primary);
+      background: linear-gradient(135deg, var(--primary), var(--dark));
       border-color: var(--primary);
       color: #fff;
+      transform: scale(1.2);
+      box-shadow: 0 4px 16px rgba(196,149,106,0.44);
+    }
+    .step-dot.active::after {
+      content: '';
+      position: absolute;
+      inset: -5px;
+      border-radius: 50%;
+      border: 2px solid var(--primary);
+      opacity: 0.45;
+      animation: pulseRing 1.7s ease-out infinite;
+    }
+    @keyframes pulseRing {
+      0%   { transform: scale(0.82); opacity:0.55; }
+      100% { transform: scale(1.55); opacity:0; }
     }
     .step-dot.done {
-      background: var(--success);
+      background: linear-gradient(135deg, var(--success-2), var(--success));
       border-color: var(--success);
       color: #fff;
+      transform: scale(1.05);
     }
     .step-line {
-      flex: 0 0 24px;
-      align-self: center;
-      height: 2px;
+      flex: 0 0 28px; height: 2px;
       background: var(--border);
+      position: relative; overflow: hidden;
     }
-    .form-group { margin-bottom: 1.4rem; }
+    .step-line::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(90deg, var(--success), var(--primary));
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.5s ease 0.1s;
+    }
+    .steps.s2 .step-line:first-of-type::after  { transform: scaleX(1); }
+    .steps.s3 .step-line::after                { transform: scaleX(1); }
+
+    /* ── Step panel ── */
+    .step-panel { animation: stepSlide 0.42s cubic-bezier(.22,1,.36,1) both; }
+    @keyframes stepSlide {
+      from { opacity:0; transform: translateX(18px); }
+      to   { opacity:1; transform: translateX(0); }
+    }
+
+    /* ── Form fields ── */
+    .form-group { margin-bottom: 1.55rem; }
     label {
       display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-size: 0.8rem; font-weight: 700;
       color: var(--dark);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      margin-bottom: 0.45rem;
+      margin-bottom: 0.52rem;
     }
     label .req { color: var(--primary); margin-left: 2px; }
+
     input, select {
       width: 100%;
-      padding: 0.75rem 1rem;
+      padding: 0.82rem 1rem;
       border: 1.5px solid var(--border);
-      border-radius: 10px;
+      border-radius: 13px;
       font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
+      font-size: 0.96rem;
       color: var(--text);
-      background: #fff;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      background: rgba(255,255,255,0.88);
       outline: none;
       appearance: none;
+      transition: border-color 0.22s, box-shadow 0.22s, transform 0.15s, background 0.2s;
     }
-    input::placeholder { color: #C5A882; }
+    input::placeholder { color: #C8A882; }
+    input:hover, select:hover  { border-color: var(--primary-2); }
     input:focus, select:focus {
       border-color: var(--primary);
-      box-shadow: 0 0 0 3px rgba(196, 149, 106, 0.18);
+      box-shadow: 0 0 0 4px rgba(196,149,106,0.2);
+      transform: translateY(-1px);
+      background: #fff;
     }
     input.error, select.error {
       border-color: var(--error);
-      box-shadow: 0 0 0 3px rgba(184, 92, 56, 0.12);
+      box-shadow: 0 0 0 4px rgba(191,94,58,0.14);
+      animation: shake 0.4s;
+    }
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-5px); }
+      75%      { transform: translateX(5px); }
     }
     input:disabled {
-      background: #F3ECE3;
+      background: #F2EAE0;
       color: var(--muted);
       cursor: not-allowed;
+      transform: none;
     }
-    .field-error { font-size: 0.78rem; color: var(--error); margin-top: 0.3rem; display: none; }
-    .field-error.show { display: block; }
-    .field-hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
+
+    .field-error {
+      font-size: 0.78rem; color: var(--error);
+      margin-top: 0.36rem;
+      display: flex; align-items: center; gap: 0.3rem;
+      max-height: 0; opacity: 0; overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+    }
+    .field-error.show { max-height: 40px; opacity: 1; }
+    .field-error::before { content: '⚠'; font-size: 0.82rem; }
+    .field-hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.42rem; }
+
     .select-wrapper { position: relative; }
     .select-wrapper::after {
       content: '';
       position: absolute;
-      right: 14px; top: 50%;
-      transform: translateY(-50%);
-      width: 0; height: 0;
+      right: 14px; top: 50%; transform: translateY(-50%);
+      width:0; height:0;
       border-left: 5px solid transparent;
       border-right: 5px solid transparent;
       border-top: 6px solid var(--muted);
       pointer-events: none;
+      transition: transform 0.22s;
     }
+    .select-wrapper:has(select:focus)::after { transform: translateY(-50%) rotate(180deg); }
+
+    /* ── Divisi cards ── */
     .divisi-label {
       display: block;
-      font-size: 0.82rem;
-      font-weight: 600;
+      font-size: 0.8rem; font-weight: 700;
       color: var(--dark);
-      letter-spacing: 0.06em;
+      letter-spacing: 0.07em;
       text-transform: uppercase;
-      margin-bottom: 0.7rem;
+      margin-bottom: 0.78rem;
     }
     .divisi-label .req { color: var(--primary); margin-left: 2px; }
-    .divisi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; }
+    .divisi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 0.82rem; }
     .divisi-option input[type="radio"] { display: none; }
     .divisi-option label {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.9rem 0.5rem;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0.52rem;
+      padding: 1.05rem 0.5rem;
       border: 1.5px solid var(--border);
-      border-radius: 12px;
+      border-radius: 15px;
       cursor: pointer;
-      transition: all 0.2s;
-      text-transform: none;
-      letter-spacing: 0;
-      font-weight: 500;
-      font-size: 0.88rem;
+      text-transform: none; letter-spacing: 0;
+      font-weight: 600; font-size: 0.89rem;
       color: var(--muted);
-      background: #fff;
+      background: rgba(255,255,255,0.72);
       text-align: center;
+      position: relative; overflow: hidden;
+      transition: all 0.28s cubic-bezier(.34,1.56,.64,1);
     }
-    .divisi-option label .icon { font-size: 1.5rem; line-height: 1; }
+    .divisi-option label .icon {
+      font-size: 1.7rem; line-height: 1;
+      transition: transform 0.32s cubic-bezier(.34,1.56,.64,1);
+    }
+    .divisi-option label:hover {
+      border-color: var(--primary-2);
+      color: var(--dark);
+      transform: translateY(-2px);
+    }
     .divisi-option input:checked + label {
       border-color: var(--primary);
-      background: rgba(196, 149, 106, 0.1);
+      background: linear-gradient(160deg, rgba(196,149,106,0.18), rgba(196,149,106,0.07));
       color: var(--deeper);
-      box-shadow: 0 2px 12px var(--shadow);
+      box-shadow: 0 6px 20px var(--shadow);
+      transform: translateY(-4px) scale(1.03);
     }
-    .divisi-option label:hover { border-color: var(--primary); color: var(--dark); }
+    .divisi-option input:checked + label .icon { transform: scale(1.2) rotate(-8deg); }
     .divisi-grid.error-group .divisi-option label { border-color: var(--error); }
     .divisi-grid.error-group .divisi-option input:checked + label { border-color: var(--primary); }
-    .divider { border: none; border-top: 1px solid var(--border); margin: 1.8rem 0; }
+
+    .divider { border: none; border-top: 1px dashed var(--border); margin: 2rem 0; }
+
+    /* ── Buttons ── */
     .btn-submit, .btn-secondary {
-      width: 100%;
-      padding: 0.9rem;
+      width: 100%; padding: 1rem;
       font-family: 'Inter', sans-serif;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 12px;
+      font-size: 1rem; font-weight: 700;
+      border-radius: 14px; border: none;
       cursor: pointer;
-      transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
+      display: flex; align-items: center; justify-content: center; gap: 0.55rem;
       letter-spacing: 0.02em;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 0.5rem;
-      border: none;
+      position: relative; overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.25s, opacity 0.2s;
     }
     .btn-submit {
-      background: linear-gradient(135deg, var(--primary), var(--dark));
+      background: linear-gradient(120deg, var(--primary) 0%, var(--dark) 60%, var(--primary) 100%);
+      background-size: 240% 100%;
+      background-position: 0% 0%;
       color: #fff;
-      box-shadow: 0 4px 16px rgba(139, 94, 60, 0.3);
+      box-shadow: 0 6px 22px rgba(139,94,60,0.32);
+      transition: background-position 0.55s ease, transform 0.15s, box-shadow 0.25s, opacity 0.2s;
+    }
+    .btn-submit::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: rgba(255,255,255,0.22);
+      transform: translateX(-110%) skewX(-18deg);
+      transition: transform 0.5s ease;
     }
     .btn-submit:hover:not(:disabled) {
-      opacity: 0.92;
-      transform: translateY(-1px);
-      box-shadow: 0 6px 22px rgba(139, 94, 60, 0.38);
+      background-position: 100% 0%;
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(139,94,60,0.42);
     }
-    .btn-submit:active:not(:disabled) { transform: translateY(0); }
-    .btn-submit:disabled { opacity: 0.65; cursor: not-allowed; }
+    .btn-submit:hover:not(:disabled)::before { transform: translateX(110%) skewX(-18deg); }
+    .btn-submit:active:not(:disabled) { transform: translateY(0) scale(0.985); }
+    .btn-submit:disabled { opacity: 0.62; cursor: not-allowed; }
+
     .btn-secondary {
       background: transparent;
       border: 1.5px solid var(--primary);
       color: var(--dark);
-      margin-top: 0.7rem;
+      margin-top: 0.75rem;
     }
     .btn-secondary:hover:not(:disabled) { background: rgba(196,149,106,0.1); }
     .btn-secondary:disabled { opacity: 0.5; cursor: not-allowed; }
+
     .btn-link {
-      background: none;
-      border: none;
-      color: var(--dark);
-      font-size: 0.85rem;
-      text-decoration: underline;
+      background: none; border: none;
+      color: var(--dark); font-size: 0.86rem;
+      text-decoration: underline; text-underline-offset: 3px;
       cursor: pointer;
-      margin-top: 0.8rem;
-      display: block;
-      text-align: center;
-      width: 100%;
+      margin-top: 0.95rem;
+      display: block; text-align: center; width: 100%;
+      transition: color 0.2s, letter-spacing 0.2s;
     }
+    .btn-link:hover { color: var(--primary); letter-spacing: 0.01em; }
     .btn-link:disabled { color: var(--muted); cursor: not-allowed; text-decoration: none; }
+
+    /* ── Spinner ── */
     .spinner {
       width: 18px; height: 18px;
-      border: 2px solid rgba(255,255,255,0.4);
+      border: 2.5px solid rgba(255,255,255,0.38);
       border-top-color: #fff;
       border-radius: 50%;
       animation: spin 0.7s linear infinite;
       display: none;
     }
     .btn-submit.loading .spinner { display: block; }
-    .btn-submit.loading .btn-text { opacity: 0.7; }
+    .btn-submit.loading .btn-text { opacity: 0.68; }
     @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Toast ── */
     .toast {
       position: fixed;
-      top: 1.5rem; left: 50%;
-      transform: translateX(-50%) translateY(-20px);
-      padding: 0.85rem 1.6rem;
-      border-radius: 12px;
-      font-size: 0.9rem;
-      font-weight: 500;
+      top: 1.6rem; left: 50%;
+      transform: translateX(-50%) translateY(-28px) scale(0.94);
+      padding: 0.92rem 1.8rem;
+      border-radius: 14px;
+      font-size: 0.9rem; font-weight: 600;
       color: #fff;
-      box-shadow: 0 6px 24px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.18);
       opacity: 0;
-      transition: opacity 0.3s, transform 0.3s;
-      z-index: 1000;
-      pointer-events: none;
-      white-space: nowrap;
-      max-width: 90vw;
-      text-align: center;
+      transition: opacity 0.36s cubic-bezier(.34,1.56,.64,1), transform 0.36s cubic-bezier(.34,1.56,.64,1);
+      z-index: 1000; pointer-events: none;
+      white-space: nowrap; max-width: 90vw;
+      display: flex; align-items: center; gap: 0.5rem;
     }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-    .toast.success { background: var(--success); }
-    .toast.error   { background: var(--error); }
+    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0) scale(1); }
+    .toast.success { background: linear-gradient(120deg, var(--success), var(--success-2)); }
+    .toast.error   { background: linear-gradient(120deg, var(--error), #D47D55); }
+
+    /* ── Verified badge ── */
     .verified-badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.35rem;
-      font-size: 0.78rem;
-      font-weight: 600;
-      color: var(--success);
-      margin-top: 0.4rem;
+      display: inline-flex; align-items: center; gap: 0.35rem;
+      font-size: 0.78rem; font-weight: 700;
+      color: var(--success); margin-top: 0.52rem;
+      animation: popIn 0.4s cubic-bezier(.22,1,.36,1) both;
     }
-    .success-screen { display: none; text-align: center; padding: 2rem 0; }
-    .success-screen.show { display: block; }
+
+    /* ── Success screen ── */
+    .success-screen { display: none; text-align: center; padding: 1.6rem 0; }
+    .success-screen.show { display: block; animation: riseIn 0.6s cubic-bezier(.22,1,.36,1) both; }
     .success-icon {
-      width: 80px; height: 80px;
-      background: rgba(106, 140, 94, 0.12);
+      width: 90px; height: 90px;
+      background: radial-gradient(circle, rgba(95,138,82,0.2), rgba(95,138,82,0.04));
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 1.2rem;
-      font-size: 2.2rem;
+      margin: 0 auto 1.4rem;
+      font-size: 2.5rem;
+      position: relative;
+      animation: popIn 0.65s 0.1s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    .success-icon::after {
+      content: '';
+      position: absolute; inset: -8px; border-radius: 50%;
+      border: 2px solid var(--success-2); opacity: 0.55;
+      animation: pulseRing 1.9s ease-out infinite;
     }
     .success-screen h2 {
       font-family: 'Playfair Display', serif;
-      color: var(--deeper);
-      font-size: 1.6rem;
-      margin-bottom: 0.5rem;
+      color: var(--deeper); font-size: 1.7rem;
+      margin-bottom: 0.6rem;
+      animation: riseIn 0.5s 0.2s cubic-bezier(.22,1,.36,1) both;
     }
-    .success-screen p { color: var(--muted); line-height: 1.6; margin-bottom: 0.5rem; }
+    .success-screen p {
+      color: var(--muted); line-height: 1.68; margin-bottom: 0.5rem;
+      animation: riseIn 0.5s 0.3s cubic-bezier(.22,1,.36,1) both;
+    }
     .btn-group-join {
-      margin-top: 1.5rem;
-      padding: 0.9rem 2rem;
-      background: linear-gradient(135deg, #5C8A5C, #3F6B3F);
-      border: none;
-      border-radius: 12px;
+      margin-top: 1.7rem;
+      padding: 1rem 2.4rem;
+      background: linear-gradient(120deg, #5C8A52, #3A6B38 65%, #5C8A52);
+      background-size: 240% 100%;
+      border: none; border-radius: 14px;
       color: #fff;
       font-family: 'Inter', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 600;
+      font-size: 0.96rem; font-weight: 700;
       cursor: pointer;
-      box-shadow: 0 4px 16px rgba(60, 100, 60, 0.3);
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      transition: opacity 0.2s, transform 0.15s;
+      box-shadow: 0 8px 24px rgba(58,107,56,0.32);
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      transition: transform 0.15s, box-shadow 0.25s, background-position 0.55s;
+      animation: riseIn 0.5s 0.4s cubic-bezier(.22,1,.36,1) both, breathe 2.6s ease-in-out 1.4s infinite;
     }
-    .btn-group-join:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn-group-join:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 32px rgba(58,107,56,0.42);
+      background-position: 100% 0%;
+    }
+    @keyframes breathe {
+      0%,100% { box-shadow: 0 8px 24px rgba(58,107,56,0.32); }
+      50%      { box-shadow: 0 8px 32px rgba(58,107,56,0.5); }
+    }
     .btn-reset {
-      margin-top: 1rem;
-      padding: 0.7rem 2rem;
+      margin-top: 1.1rem; padding: 0.72rem 2rem;
       background: transparent;
       border: 1.5px solid var(--primary);
-      border-radius: 10px;
-      color: var(--dark);
+      border-radius: 12px; color: var(--dark);
       font-family: 'Inter', sans-serif;
-      font-size: 0.9rem;
-      font-weight: 500;
+      font-size: 0.9rem; font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
-      display: block;
-      margin-left: auto;
-      margin-right: auto;
+      transition: background 0.2s, transform 0.15s;
+      display: block; margin-left: auto; margin-right: auto;
+      animation: riseIn 0.5s 0.5s cubic-bezier(.22,1,.36,1) both;
     }
-    .btn-reset:hover { background: rgba(196,149,106,0.1); }
+    .btn-reset:hover { background: rgba(196,149,106,0.1); transform: translateY(-1px); }
+
     footer {
-      margin-top: 2rem;
-      color: var(--muted);
-      font-size: 0.8rem;
-      text-align: center;
-      opacity: 0.7;
+      margin-top: 2.4rem;
+      color: var(--muted); font-size: 0.8rem;
+      text-align: center; opacity: 0.72;
+      position: relative; z-index: 1;
+      animation: fadeIn 1s 0.5s both;
     }
+
     @media (max-width: 480px) {
-      .card { padding: 1.8rem 1.4rem; }
-      .divisi-option label { padding: 0.75rem 0.3rem; font-size: 0.8rem; }
+      .card { padding: 2rem 1.4rem; }
+      .skeleton-overlay { padding: 2rem 1.4rem; }
+      header h1 { font-size: 1.85rem; }
+      .divisi-option label { padding: 0.82rem 0.3rem; font-size: 0.8rem; }
+      .logo-wrap, .logo-circle { width: 88px; height: 88px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
     }
   </style>
 </head>
 <body>
 
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
   <header>
-    <div class="logo-circle">
-  <img
-    src="https://kir-erobo.vercel.app/LogoKir.png"
-    alt="Logo EROBO">
-</div>
+    <div class="logo-wrap">
+      <div class="logo-ring"></div>
+      <div class="logo-circle">
+        <div class="logo-skeleton" id="logoSkeleton"></div>
+        <img
+          src="https://kir-erobo.vercel.app/LogoKir.png"
+          alt="Logo KIR EROBO"
+          id="logoImg"
+          style="display:none;" />
+      </div>
+    </div>
+    <h1>Kelompok Ilmiah Remaja</h1>
+    <p>Daftarkan dirimu dan bergabunglah bersama komunitas peneliti muda yang penuh semangat inovasi.</p>
   </header>
 
-  <div class="card">
+  <div class="card-wrap">
+    <div class="card">
+      <div class="card-accent"></div>
 
-    <div class="steps" id="stepsIndicator">
-      <div class="step-dot active" id="dotStep1">1</div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="dotStep2">2</div>
-      <div class="step-line"></div>
-      <div class="step-dot" id="dotStep3">3</div>
-    </div>
-
-    <!-- STEP 1: Input Email -->
-    <div id="step1">
-      <div class="form-group">
-        <label for="emailInput">Email <span class="req">*</span></label>
-        <input type="email" id="emailInput" placeholder="nama@email.com" autocomplete="email" />
-        <span class="field-error" id="err-emailInput">Masukkan alamat email yang valid.</span>
-        <p class="field-hint">Kode verifikasi akan dikirim ke email ini.</p>
-      </div>
-      <button type="button" class="btn-submit" id="sendOtpBtn">
-        <div class="spinner"></div>
-        <span class="btn-text">Kirim Kode Verifikasi</span>
-      </button>
-    </div>
-
-    <!-- STEP 2: Verifikasi OTP -->
-    <div id="step2" style="display:none;">
-      <div class="form-group">
-        <label>Email</label>
-        <input type="email" id="emailConfirmDisplay" disabled />
-        <span class="verified-badge" id="verifiedBadge" style="display:none;">✅ Email terverifikasi</span>
-      </div>
-      <div class="form-group">
-        <label for="otpInput">Kode Verifikasi <span class="req">*</span></label>
-        <input type="text" id="otpInput" placeholder="Masukkan 6 digit kode" inputmode="numeric" maxlength="6" />
-        <span class="field-error" id="err-otpInput">Kode verifikasi salah atau kadaluarsa.</span>
-      </div>
-      <button type="button" class="btn-submit" id="verifyOtpBtn">
-        <div class="spinner"></div>
-        <span class="btn-text">Verifikasi Kode</span>
-      </button>
-      <button type="button" class="btn-link" id="resendOtpBtn">Kirim ulang kode</button>
-      <button type="button" class="btn-link" id="changeEmailBtn">Ganti email</button>
-    </div>
-
-    <!-- STEP 3: Form Data Lengkap -->
-    <form id="kirForm" style="display:none;" novalidate>
-
-      <div class="form-group">
-        <label for="nama">Nama Lengkap <span class="req">*</span></label>
-        <input type="text" id="nama" placeholder="Masukkan nama lengkapmu" autocomplete="name" />
-        <span class="field-error" id="err-nama">Nama tidak boleh kosong.</span>
-      </div>
-
-      <div class="form-group">
-        <label for="kelas">Kelas <span class="req">*</span></label>
-        <div class="select-wrapper">
-          <select id="kelas">
-            <option value="">— Pilih kelas —</option>
-            <option>X</option>
-            <option>IX</option>
-          </select>
+      <!-- ══════════ SKELETON LOADER ══════════ -->
+      <div class="skeleton-overlay" id="skeletonOverlay">
+        <div class="sk-center"><div class="sk sk-steps"></div></div>
+        <div class="sk sk-label"></div>
+        <div class="sk sk-input"></div>
+        <div class="sk sk-label" style="width:52%;"></div>
+        <div class="sk sk-input"></div>
+        <div class="sk-row">
+          <div class="sk sk-chip"></div>
+          <div class="sk sk-chip"></div>
+          <div class="sk sk-chip"></div>
         </div>
-        <span class="field-error" id="err-kelas">Kelas harus dipilih.</span>
+        <div class="sk sk-btn"></div>
+        <div class="sk sk-label" style="width:40%; margin: 0 auto;"></div>
       </div>
 
-      <div class="form-group">
-        <label for="jurusan">Jurusan <span class="req">*</span></label>
-        <div class="select-wrapper">
-          <select id="jurusan">
-            <option value="">— Pilih jurusan —</option>
-            <option>SIJA</option>
-            <option>RPL</option>
-            <option>DPIB</option>
-            <option>DKV</option>
-            <option>TITL</option>
-            <option>TKP</option>
-            <option>TKR</option>
-            <option>TP</option>
-            <option>DGM</option>
-          </select>
+      <!-- Step indicator -->
+      <div class="steps" id="stepsIndicator">
+        <div class="step-dot active" id="dotStep1">1</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="dotStep2">2</div>
+        <div class="step-line"></div>
+        <div class="step-dot" id="dotStep3">3</div>
+      </div>
+
+      <!-- ══════════ STEP 1: Email ══════════ -->
+      <div id="step1" class="step-panel">
+        <div class="form-group">
+          <label for="emailInput">Email <span class="req">*</span></label>
+          <input type="email" id="emailInput" placeholder="nama@email.com" autocomplete="email" />
+          <span class="field-error" id="err-emailInput">Masukkan alamat email yang valid.</span>
+          <p class="field-hint">Kode verifikasi akan dikirim ke email ini.</p>
         </div>
-        <span class="field-error" id="err-jurusan">Jurusan harus dipilih.</span>
+        <button type="button" class="btn-submit" id="sendOtpBtn">
+          <div class="spinner"></div>
+          <span class="btn-text">Kirim Kode Verifikasi</span>
+        </button>
       </div>
 
-      <div class="form-group">
-        <label for="nis">NIS <span class="req">*</span></label>
-        <input type="text" id="nis" placeholder="Nomor Induk Siswa" inputmode="numeric" maxlength="12" />
-        <span class="field-error" id="err-nis">NIS hanya boleh berisi angka.</span>
-      </div>
-
-      <hr class="divider" />
-
-      <div class="form-group">
-        <span class="divisi-label">Pilih Divisi <span class="req">*</span></span>
-        <div class="divisi-grid" id="divisiGrid">
-          <div class="divisi-option">
-            <input type="radio" name="divisi" id="div-retek" value="Retek" />
-            <label for="div-retek"><span class="icon">&#128295;</span>Retek</label>
-          </div>
-          <div class="divisi-option">
-            <input type="radio" name="divisi" id="div-ai" value="AI" />
-            <label for="div-ai"><span class="icon">&#129302;</span>AI</label>
-          </div>
-          <div class="divisi-option">
-            <input type="radio" name="divisi" id="div-sains" value="Sains" />
-            <label for="div-sains"><span class="icon">&#128300;</span>Sains</label>
-          </div>
+      <!-- ══════════ STEP 2: OTP ══════════ -->
+      <div id="step2" class="step-panel" style="display:none;">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="emailConfirmDisplay" disabled />
+          <span class="verified-badge" id="verifiedBadge" style="display:none;">✅ Email terverifikasi</span>
         </div>
-        <span class="field-error" id="err-divisi">Silakan pilih divisi.</span>
+        <div class="form-group">
+          <label for="otpInput">Kode Verifikasi <span class="req">*</span></label>
+          <input type="text" id="otpInput" placeholder="Masukkan 6 digit kode" inputmode="numeric" maxlength="6" />
+          <span class="field-error" id="err-otpInput">Kode verifikasi salah atau kadaluarsa.</span>
+        </div>
+        <button type="button" class="btn-submit" id="verifyOtpBtn">
+          <div class="spinner"></div>
+          <span class="btn-text">Verifikasi Kode</span>
+        </button>
+        <button type="button" class="btn-link" id="resendOtpBtn">Kirim ulang kode</button>
+        <button type="button" class="btn-link" id="changeEmailBtn">Ganti email</button>
       </div>
 
-      <button type="submit" class="btn-submit" id="submitBtn">
-        <div class="spinner"></div>
-        <span class="btn-text">Daftar Sekarang</span>
-      </button>
-    </form>
+      <!-- ══════════ STEP 3: Form Lengkap ══════════ -->
+      <form id="kirForm" class="step-panel" style="display:none;" novalidate>
 
-    <div class="success-screen" id="successScreen">
-      <div class="success-icon">&#9989;</div>
-      <h2>Terima Kasih Sudah Mendaftar!</h2>
-      <p>Pendaftaran kamu untuk ekskul KIR sudah berhasil tersimpan.<br/>Yuk langsung gabung ke grup supaya tidak ketinggalan info selanjutnya.</p>
-      <button class="btn-group-join" id="joinGroupBtn" type="button">
-        <span>&#128172;</span> Gabung ke Grup
-      </button>
-      <button class="btn-reset" id="resetBtn" type="button">Daftar Lagi</button>
+        <div class="form-group">
+          <label for="nama">Nama Lengkap <span class="req">*</span></label>
+          <input type="text" id="nama" placeholder="Masukkan nama lengkapmu" autocomplete="name" />
+          <span class="field-error" id="err-nama">Nama tidak boleh kosong.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="kelas">Kelas <span class="req">*</span></label>
+          <div class="select-wrapper">
+            <select id="kelas">
+              <option value="">— Pilih kelas —</option>
+              <option>X</option>
+              <option>IX</option>
+            </select>
+          </div>
+          <span class="field-error" id="err-kelas">Kelas harus dipilih.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="jurusan">Jurusan <span class="req">*</span></label>
+          <div class="select-wrapper">
+            <select id="jurusan">
+              <option value="">— Pilih jurusan —</option>
+              <option>SIJA</option>
+              <option>TKJ</option>
+              <option>RPL</option>
+              <option>DPIB</option>
+              <option>DKV</option>
+              <option>TITL</option>
+              <option>TKP</option>
+              <option>TKR</option>
+              <option>TP</option>
+              <option>DGM</option>
+            </select>
+          </div>
+          <span class="field-error" id="err-jurusan">Jurusan harus dipilih.</span>
+        </div>
+
+        <div class="form-group">
+          <label for="nis">NIS <span class="req">*</span></label>
+          <input type="text" id="nis" placeholder="Nomor Induk Siswa" inputmode="numeric" maxlength="12" />
+          <span class="field-error" id="err-nis">NIS hanya boleh berisi angka.</span>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="form-group">
+          <span class="divisi-label">Pilih Divisi <span class="req">*</span></span>
+          <div class="divisi-grid" id="divisiGrid">
+            <div class="divisi-option">
+              <input type="radio" name="divisi" id="div-retek" value="Retek" />
+              <label for="div-retek"><span class="icon">&#128295;</span>Retek</label>
+            </div>
+            <div class="divisi-option">
+              <input type="radio" name="divisi" id="div-ai" value="AI" />
+              <label for="div-ai"><span class="icon">&#129302;</span>AI</label>
+            </div>
+            <div class="divisi-option">
+              <input type="radio" name="divisi" id="div-sains" value="Sains" />
+              <label for="div-sains"><span class="icon">&#128300;</span>Sains</label>
+            </div>
+          </div>
+          <span class="field-error" id="err-divisi">Silakan pilih divisi.</span>
+        </div>
+
+        <button type="submit" class="btn-submit" id="submitBtn">
+          <div class="spinner"></div>
+          <span class="btn-text">Daftar Sekarang</span>
+        </button>
+      </form>
+
+      <!-- ══════════ SUCCESS ══════════ -->
+      <div class="success-screen" id="successScreen">
+        <div class="success-icon">&#9989;</div>
+        <h2>Terima Kasih Sudah Mendaftar!</h2>
+        <p>Pendaftaran kamu untuk ekskul KIR sudah berhasil tersimpan.<br/>Yuk langsung gabung ke grup supaya tidak ketinggalan info selanjutnya.</p>
+        <button class="btn-group-join" id="joinGroupBtn" type="button">
+          <span>&#128172;</span> Gabung ke Grup
+        </button>
+        <button class="btn-reset" id="resetBtn" type="button">Daftar Lagi</button>
+      </div>
+
     </div>
   </div>
 
@@ -527,53 +803,80 @@
 
   <script>
     // ================================================================
-    // KONFIGURASI — ganti dengan URL Apps Script kamu (deploy ulang setelah update kode .gs)
+    // KONFIGURASI
     // ================================================================
     var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxj8h9JIoKy5vwkydkTJ4j_I29-m-pDZPGiyx5QV2USxJADNz_62lkQpxzQdVyIjSOA/exec";
-
-    // Ganti link ini dengan link grup WhatsApp/Telegram asli ekskul KIR
     var GROUP_LINK = "https://chat.whatsapp.com/ganti-dengan-link-grup-kamu";
     // ================================================================
 
-    var step1 = document.getElementById("step1");
-    var step2 = document.getElementById("step2");
-    var kirForm = document.getElementById("kirForm");
-    var successScr = document.getElementById("successScreen");
+    // ── DOM refs ──
+    var step1          = document.getElementById("step1");
+    var step2          = document.getElementById("step2");
+    var kirForm        = document.getElementById("kirForm");
+    var successScr     = document.getElementById("successScreen");
     var stepsIndicator = document.getElementById("stepsIndicator");
+    var dotStep1       = document.getElementById("dotStep1");
+    var dotStep2       = document.getElementById("dotStep2");
+    var dotStep3       = document.getElementById("dotStep3");
+    var emailInput         = document.getElementById("emailInput");
+    var emailConfirmDisplay= document.getElementById("emailConfirmDisplay");
+    var otpInput           = document.getElementById("otpInput");
+    var verifiedBadge      = document.getElementById("verifiedBadge");
+    var sendOtpBtn    = document.getElementById("sendOtpBtn");
+    var verifyOtpBtn  = document.getElementById("verifyOtpBtn");
+    var resendOtpBtn  = document.getElementById("resendOtpBtn");
+    var changeEmailBtn= document.getElementById("changeEmailBtn");
+    var submitBtn     = document.getElementById("submitBtn");
+    var resetBtn      = document.getElementById("resetBtn");
+    var joinGroupBtn  = document.getElementById("joinGroupBtn");
+    var toastEl       = document.getElementById("toast");
+    var skeletonOverlay = document.getElementById("skeletonOverlay");
+    var logoImg       = document.getElementById("logoImg");
+    var logoSkeleton  = document.getElementById("logoSkeleton");
 
-    var dotStep1 = document.getElementById("dotStep1");
-    var dotStep2 = document.getElementById("dotStep2");
-    var dotStep3 = document.getElementById("dotStep3");
+    var verifiedEmail = "";
 
-    var emailInput = document.getElementById("emailInput");
-    var emailConfirmDisplay = document.getElementById("emailConfirmDisplay");
-    var otpInput = document.getElementById("otpInput");
-    var verifiedBadge = document.getElementById("verifiedBadge");
+    // ── Skeleton ──
+    function hideSkeleton() { skeletonOverlay.classList.add("hide"); }
+    window.addEventListener("load", function() { setTimeout(hideSkeleton, 420); });
+    setTimeout(hideSkeleton, 2500);
 
-    var sendOtpBtn = document.getElementById("sendOtpBtn");
-    var verifyOtpBtn = document.getElementById("verifyOtpBtn");
-    var resendOtpBtn = document.getElementById("resendOtpBtn");
-    var changeEmailBtn = document.getElementById("changeEmailBtn");
-    var submitBtn = document.getElementById("submitBtn");
-    var resetBtn = document.getElementById("resetBtn");
-    var joinGroupBtn = document.getElementById("joinGroupBtn");
+    logoImg.addEventListener("load", function() {
+      logoSkeleton.style.display = "none";
+      logoImg.style.display = "block";
+    });
+    logoImg.addEventListener("error", function() {
+      logoSkeleton.style.display = "none";
+      logoImg.style.display = "block";
+    });
+    if (logoImg.complete && logoImg.naturalWidth > 0) {
+      logoSkeleton.style.display = "none";
+      logoImg.style.display = "block";
+    }
 
-    var toastEl = document.getElementById("toast");
-
-    var verifiedEmail = ""; // email yang sudah terverifikasi OTP
-
+    // ── Toast ──
     function showToast(msg, type) {
       toastEl.textContent = msg;
       toastEl.className = "toast " + (type || "success") + " show";
       setTimeout(function() { toastEl.classList.remove("show"); }, 4000);
     }
 
+    // ── Field error ──
     function setError(errId, show, fieldId) {
       var errEl = document.getElementById(errId);
       if (errEl) errEl.classList.toggle("show", show);
       if (fieldId) {
         var fieldEl = document.getElementById(fieldId);
-        if (fieldEl) fieldEl.classList.toggle("error", show);
+        if (fieldEl) {
+          if (show) {
+            fieldEl.classList.add("error");
+            fieldEl.style.animation = "none";
+            void fieldEl.offsetWidth;
+            fieldEl.style.animation = "";
+          } else {
+            fieldEl.classList.remove("error");
+          }
+        }
       }
     }
 
@@ -582,43 +885,52 @@
       btn.classList.toggle("loading", loading);
     }
 
-    function isValidEmail(value) {
-      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+    function isValidEmail(val) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val.trim());
     }
 
-    function goToStep(stepNum) {
-      step1.style.display = stepNum === 1 ? "" : "none";
-      step2.style.display = stepNum === 2 ? "" : "none";
-      kirForm.style.display = stepNum === 3 ? "" : "none";
+    function replay(el) {
+      el.classList.remove("step-panel");
+      void el.offsetWidth;
+      el.classList.add("step-panel");
+    }
+
+    // ── Step navigation ──
+    function goToStep(n) {
+      step1.style.display  = n === 1 ? "" : "none";
+      step2.style.display  = n === 2 ? "" : "none";
+      kirForm.style.display= n === 3 ? "" : "none";
       stepsIndicator.style.display = "";
 
+      stepsIndicator.classList.toggle("s2", n >= 2);
+      stepsIndicator.classList.toggle("s3", n >= 3);
+
+      var activePanel = n === 1 ? step1 : (n === 2 ? step2 : kirForm);
+      replay(activePanel);
+
       [dotStep1, dotStep2, dotStep3].forEach(function(dot, idx) {
-        var n = idx + 1;
+        var num = idx + 1;
         dot.classList.remove("active", "done");
-        if (n < stepNum) dot.classList.add("done");
-        else if (n === stepNum) dot.classList.add("active");
+        if (num < n)  dot.classList.add("done");
+        if (num === n) dot.classList.add("active");
       });
     }
 
-    // Memanggil Apps Script dan mem-parsing respons JSON
+    // ── Apps Script call ──
     function callScript(params) {
       var query = new URLSearchParams(params).toString();
       return fetch(APPS_SCRIPT_URL + "?" + query, { method: "GET" })
         .then(function(res) { return res.json(); });
     }
 
-    // ───────────── STEP 1: Kirim OTP ─────────────
+    // ── STEP 1: Kirim OTP ──
     function sendOtp() {
       var email = emailInput.value.trim();
-      var emailOk = isValidEmail(email);
-      setError("err-emailInput", !emailOk, "emailInput");
-      if (!emailOk) {
-        showToast("Masukkan email yang valid.", "error");
-        return;
-      }
+      var ok    = isValidEmail(email);
+      setError("err-emailInput", !ok, "emailInput");
+      if (!ok) { showToast("Masukkan email yang valid.", "error"); return; }
 
       setLoading(sendOtpBtn, true);
-
       callScript({ action: "send_otp", email: email })
         .then(function(data) {
           if (data.success) {
@@ -631,30 +943,20 @@
             showToast(data.message || "Gagal mengirim kode verifikasi.", "error");
           }
         })
-        .catch(function() {
-          showToast("Terjadi kesalahan koneksi. Coba lagi.", "error");
-        })
-        .finally(function() {
-          setLoading(sendOtpBtn, false);
-        });
+        .catch(function() { showToast("Terjadi kesalahan koneksi. Coba lagi.", "error"); })
+        .finally(function() { setLoading(sendOtpBtn, false); });
     }
-
     sendOtpBtn.addEventListener("click", sendOtp);
 
-    // ───────────── STEP 2: Verifikasi OTP ─────────────
+    // ── STEP 2: Verifikasi OTP ──
     verifyOtpBtn.addEventListener("click", function() {
       var email = emailConfirmDisplay.value.trim();
-      var code = otpInput.value.trim();
-
-      var codeOk = /^\d{6}$/.test(code);
-      setError("err-otpInput", !codeOk, "otpInput");
-      if (!codeOk) {
-        showToast("Masukkan 6 digit kode verifikasi.", "error");
-        return;
-      }
+      var code  = otpInput.value.trim();
+      var ok    = /^\d{6}$/.test(code);
+      setError("err-otpInput", !ok, "otpInput");
+      if (!ok) { showToast("Masukkan 6 digit kode verifikasi.", "error"); return; }
 
       setLoading(verifyOtpBtn, true);
-
       callScript({ action: "verify_otp", email: email, code: code })
         .then(function(data) {
           if (data.success) {
@@ -667,29 +969,23 @@
             showToast(data.message || "Kode verifikasi salah.", "error");
           }
         })
-        .catch(function() {
-          showToast("Terjadi kesalahan koneksi. Coba lagi.", "error");
-        })
-        .finally(function() {
-          setLoading(verifyOtpBtn, false);
-        });
+        .catch(function() { showToast("Terjadi kesalahan koneksi. Coba lagi.", "error"); })
+        .finally(function() { setLoading(verifyOtpBtn, false); });
     });
 
     resendOtpBtn.addEventListener("click", function() {
       emailInput.value = emailConfirmDisplay.value;
       sendOtp();
     });
-
     changeEmailBtn.addEventListener("click", function() {
       verifiedEmail = "";
       otpInput.value = "";
       goToStep(1);
     });
 
-    // ───────────── STEP 3: Validasi & Submit Form ─────────────
+    // ── STEP 3: Validasi & Submit ──
     function validate(data) {
       var ok = true;
-
       var namaOk = data.nama.trim().length > 0;
       setError("err-nama", !namaOk, "nama");
       if (!namaOk) ok = false;
@@ -717,7 +1013,6 @@
 
     kirForm.addEventListener("submit", function(e) {
       e.preventDefault();
-
       if (!verifiedEmail) {
         showToast("Email belum diverifikasi. Silakan ulangi dari awal.", "error");
         goToStep(1);
@@ -735,13 +1030,9 @@
         waktu:   new Date().toLocaleString("id-ID")
       };
 
-      if (!validate(data)) {
-        showToast("Lengkapi data yang diperlukan.", "error");
-        return;
-      }
+      if (!validate(data)) { showToast("Lengkapi data yang diperlukan.", "error"); return; }
 
       setLoading(submitBtn, true);
-
       callScript({
         action:  "submit",
         nama:    data.nama,
@@ -762,20 +1053,16 @@
           showToast(res.message || "Pendaftaran gagal. Coba lagi.", "error");
         }
       })
-      .catch(function() {
-        showToast("Terjadi kesalahan koneksi. Coba lagi.", "error");
-      })
-      .finally(function() {
-        setLoading(submitBtn, false);
-      });
+      .catch(function() { showToast("Terjadi kesalahan koneksi. Coba lagi.", "error"); })
+      .finally(function() { setLoading(submitBtn, false); });
     });
 
-    // ───────────── Tombol "Gabung ke Grup" (dummy/placeholder) ─────────────
+    // ── Gabung Grup ──
     joinGroupBtn.addEventListener("click", function() {
       window.open(GROUP_LINK, "_blank");
     });
 
-    // ───────────── Reset / Daftar Lagi ─────────────
+    // ── Reset / Daftar Lagi ──
     resetBtn.addEventListener("click", function() {
       kirForm.reset();
       emailInput.value = "";
@@ -783,17 +1070,15 @@
       otpInput.value = "";
       verifiedEmail = "";
       verifiedBadge.style.display = "none";
-
       successScr.classList.remove("show");
       document.querySelectorAll(".field-error").forEach(function(el) { el.classList.remove("show"); });
       document.querySelectorAll("input, select").forEach(function(el) { el.classList.remove("error"); });
       var grid = document.getElementById("divisiGrid");
       if (grid) grid.classList.remove("error-group");
-
       goToStep(1);
     });
 
-    // Inisialisasi tampilan awal
+    // Init
     goToStep(1);
   </script>
 </body>
