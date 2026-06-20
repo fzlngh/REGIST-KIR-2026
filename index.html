@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Pendaftaran Ekskul KIR</title>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
@@ -302,8 +304,9 @@
         <div class="select-wrapper">
           <select id="kelas">
             <option value="">— Pilih kelas —</option>
-            <option>X</option>
-            <option>IX</option>
+            <option>X-1</option><option>X-2</option><option>X-3</option><option>X-4</option>
+            <option>XI-1</option><option>XI-2</option><option>XI-3</option><option>XI-4</option>
+            <option>XII-1</option><option>XII-2</option><option>XII-3</option><option>XII-4</option>
           </select>
         </div>
         <span class="field-error" id="err-kelas">Kelas harus dipilih.</span>
@@ -314,16 +317,13 @@
         <div class="select-wrapper">
           <select id="jurusan">
             <option value="">— Pilih jurusan —</option>
-            <option>SIJA</option>
-            <option>RPL</option>
-            <option>TKJ</option>
-            <option>DPIB</option>
-            <option>DKV</option>
-            <option>TITL</option>
-            <option>TKP</option>
-            <option>TKR</option>
-            <option>TP</option>
-            <option>DGM</option>
+            <option>Teknik Pemesinan</option>
+            <option>Teknik Kendaraan Ringan</option>
+            <option>Teknik Instalasi Tenaga Listrik</option>
+            <option>Teknik Elektronika Industri</option>
+            <option>Teknik Komputer dan Jaringan</option>
+            <option>Rekayasa Perangkat Lunak</option>
+            <option>Multimedia</option>
           </select>
         </div>
         <span class="field-error" id="err-jurusan">Jurusan harus dipilih.</span>
@@ -371,16 +371,27 @@
     <div class="success-screen" id="successScreen">
       <div class="success-icon">&#9989;</div>
       <h2>Pendaftaran Berhasil!</h2>
-      <p>Terima kasih telah mendaftar ekskul KIR.<br/>Data kamu sudah kami simpan. Pantau terus info selanjutnya.</p>
+      <p>Terima kasih telah mendaftar ekskul KIR.<br/>Email konfirmasi sudah dikirim ke email kamu. Pantau terus info selanjutnya.</p>
       <button class="btn-reset" id="resetBtn">Daftar Lagi</button>
     </div>
   </div>
 
-  <footer>&#169; 2026 EROBO &middot; SMKN 1 Jakarta &middot; Semua hak dilindungi</footer>
+  <footer>&#169; 2025 Ekskul KIR &middot; SMKN 1 Jakarta &middot; Semua hak dilindungi</footer>
   <div class="toast" id="toast"></div>
 
   <script>
-    var APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxj8h9JIoKy5vwkydkTJ4j_I29-m-pDZPGiyx5QV2USxJADNz_62lkQpxzQdVyIjSOA/exec";
+    // ================================================================
+    // KONFIGURASI — ganti dengan kredensial kamu
+    // ================================================================
+    var APPS_SCRIPT_URL  = "https://script.google.com/macros/s/PASTE_URL_KAMU_DISINI/exec";
+
+    var EMAILJS_PUBLIC_KEY  = "Fb-d0G_hUFZxRfqLb";   // EmailJS → Account → Public Key
+    var EMAILJS_SERVICE_ID  = "service_nl4gcf6";   // EmailJS → Email Services → Service ID
+    var EMAILJS_TEMPLATE_ID = "template_w0q32sv";  // EmailJS → Email Templates → Template ID
+    // ================================================================
+
+    // Init EmailJS
+    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
 
     var form       = document.getElementById("kirForm");
     var successScr = document.getElementById("successScreen");
@@ -391,7 +402,7 @@
     function showToast(msg, type) {
       toastEl.textContent = msg;
       toastEl.className = "toast " + (type || "success") + " show";
-      setTimeout(function() { toastEl.classList.remove("show"); }, 3500);
+      setTimeout(function() { toastEl.classList.remove("show"); }, 4000);
     }
 
     function setError(errId, show, fieldId) {
@@ -405,6 +416,7 @@
 
     function validate(data) {
       var ok = true;
+
       var namaOk = data.nama.trim().length > 0;
       setError("err-nama", !namaOk, "nama");
       if (!namaOk) ok = false;
@@ -434,8 +446,36 @@
       return ok;
     }
 
+    // Kirim data ke Google Sheets
+    function kirimKeSheets(data) {
+      var params = new URLSearchParams({
+        nama:    data.nama,
+        kelas:   data.kelas,
+        jurusan: data.jurusan,
+        nis:     data.nis,
+        email:   data.email,
+        divisi:  data.divisi,
+        waktu:   data.waktu
+      }).toString();
+      return fetch(APPS_SCRIPT_URL + "?" + params, { method: "GET", mode: "no-cors" });
+    }
+
+    // Kirim email auto-reply via EmailJS
+    function kirimEmail(data) {
+      return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_name:    data.nama,
+        to_email:   data.email,
+        kelas:      data.kelas,
+        jurusan:    data.jurusan,
+        nis:        data.nis,
+        divisi:     data.divisi,
+        waktu:      data.waktu
+      });
+    }
+
     form.addEventListener("submit", function(e) {
       e.preventDefault();
+
       var divisiEl = document.querySelector('input[name="divisi"]:checked');
       var data = {
         nama:    document.getElementById("nama").value,
@@ -446,26 +486,36 @@
         divisi:  divisiEl ? divisiEl.value : "",
         waktu:   new Date().toLocaleString("id-ID")
       };
+
       if (!validate(data)) {
         showToast("Lengkapi data yang diperlukan.", "error");
         return;
       }
+
       submitBtn.disabled = true;
       submitBtn.classList.add("loading");
-      var params = new URLSearchParams(data).toString();
-      fetch(APPS_SCRIPT_URL + "?" + params, { method: "GET", mode: "no-cors" })
-        .then(function() {
-          form.style.display = "none";
-          successScr.classList.add("show");
-          showToast("Pendaftaran berhasil!", "success");
-        })
-        .catch(function() {
-          showToast("Gagal mengirim data. Coba lagi.", "error");
-        })
-        .finally(function() {
-          submitBtn.disabled = false;
-          submitBtn.classList.remove("loading");
-        });
+
+      // Jalankan keduanya bersamaan
+      Promise.all([
+        kirimKeSheets(data),
+        kirimEmail(data)
+      ])
+      .then(function() {
+        form.style.display = "none";
+        successScr.classList.add("show");
+        showToast("Pendaftaran berhasil! Cek email kamu.", "success");
+      })
+      .catch(function(err) {
+        console.error("Error:", err);
+        // Sheets pakai no-cors jadi selalu resolve — error ini berarti EmailJS gagal
+        showToast("Pendaftaran tersimpan, tapi email gagal terkirim.", "error");
+        form.style.display = "none";
+        successScr.classList.add("show");
+      })
+      .finally(function() {
+        submitBtn.disabled = false;
+        submitBtn.classList.remove("loading");
+      });
     });
 
     resetBtn.addEventListener("click", function() {
