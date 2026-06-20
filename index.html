@@ -384,15 +384,17 @@
     // ================================================================
     // KONFIGURASI — ganti dengan kredensial kamu
     // ================================================================
-    var APPS_SCRIPT_URL  = "https://script.google.com/macros/s/PASTE_URL_KAMU_DISINI/exec";
+    var APPS_SCRIPT_URL  = "https://script.google.com/macros/s/AKfycbxj8h9JIoKy5vwkydkTJ4j_I29-m-pDZPGiyx5QV2USxJADNz_62lkQpxzQdVyIjSOA/exec";
 
-    var EMAILJS_PUBLIC_KEY  = "Fb-d0G_hUFZxRfqLb";   // EmailJS → Account → Public Key
+    var EMAILJS_PUBLIC_KEY  = "BlP67DuSBtoYLm3eH";   // EmailJS → Account → Public Key
     var EMAILJS_SERVICE_ID  = "service_nl4gcf6";   // EmailJS → Email Services → Service ID
     var EMAILJS_TEMPLATE_ID = "template_w0q32sv";  // EmailJS → Email Templates → Template ID
     // ================================================================
 
-    // Init EmailJS
-    emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    // Init EmailJS jika SDK berhasil dimuat.
+    if (window.emailjs) {
+      emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
+    }
 
     var form       = document.getElementById("kirForm");
     var successScr = document.getElementById("successScreen");
@@ -461,16 +463,14 @@
       return fetch(APPS_SCRIPT_URL + "?" + params, { method: "GET", mode: "no-cors" });
     }
 
-    // Kirim email auto-reply via EmailJS
+    // Kirim email auto-reply via EmailJS (hanya to_name & to_email)
     function kirimEmail(data) {
+      if (!window.emailjs) {
+        return Promise.resolve();
+      }
       return emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_name:    data.nama,
-        to_email:   data.email,
-        kelas:      data.kelas,
-        jurusan:    data.jurusan,
-        nis:        data.nis,
-        divisi:     data.divisi,
-        waktu:      data.waktu
+        to_name:  data.nama,
+        to_email: data.email
       });
     }
 
